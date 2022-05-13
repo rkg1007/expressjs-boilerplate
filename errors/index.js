@@ -1,9 +1,9 @@
-import CustomError from "./custom-error.js";
-import NotFound from "./not-found.js";
-import BadRequest from "./bad-request.js";
-import Unauthenticated from "./unauthenticated.js";
+const CustomError = require("./custom-error");
+const NotFound = require("./not-found");
+const BadRequest = require("./bad-request");
+const Unauthenticated = require("./unauthenticated");
 
-export default {
+module.exports = {
   CustomError,
   NotFound,
   BadRequest,
