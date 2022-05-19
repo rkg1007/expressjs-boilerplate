@@ -7,6 +7,7 @@ const notFound = require("./middlewares/not-found");
 const errorHandler = require("./middlewares/error-handler");
 const { connectDb } = require("./configs");
 const { authRoute } = require("./routes");
+const { authenticate } = require("./middlewares/authentication");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
