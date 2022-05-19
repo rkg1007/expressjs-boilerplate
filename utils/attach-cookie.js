@@ -7,6 +7,16 @@ const jwtTokenCookie = (res, token) => {
   });
 }
 
+const logoutCookie = (res) => {
+  res.cookie("token", "logging out", {
+    httpOnly: true,
+    maxAge: 0,
+    secure: process.env.ENV === "prod",
+    signed: true
+  });
+}
+
 module.exports = {
   jwtTokenCookie,
+  logoutCookie
 }

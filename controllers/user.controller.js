@@ -31,7 +31,13 @@ const login = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.CREATED).json({ user });
 });
 
+const logout = asyncWrapper(async (req, res) => {
+  attachCookie.logoutCookie(res);
+  res.status(StatusCodes.OK).json({msg: "success"});
+})
+
 module.exports = {
   register,
   login,
+  logout,
 };
