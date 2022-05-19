@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
 const { authService } = require("../services");
-const { asyncWrapper } = require("../utils");
+const { asyncWrapper, attachCookie } = require("../utils");
 
 const register = asyncWrapper(async (req, res) => {
   const { name, email, password } = req.body;
@@ -13,7 +13,8 @@ const register = asyncWrapper(async (req, res) => {
   }
 
   const { user, token } = await authService.register({ name, email, password });
-  res.status(StatusCodes.CREATED).json({ user, token });
+  attachCookie.jwtTokenCookie(res, token);
+  res.status(StatusCodes.CREATED).json({ user });
 });
 
 const login = asyncWrapper(async (req, res) => {
@@ -26,7 +27,8 @@ const login = asyncWrapper(async (req, res) => {
   }
 
   const { user, token } = await authService.login({ email, password });
-  res.status(StatusCodes.CREATED).json({ user, token });
+  attachCookie.jwtTokenCookie(res, token);
+  res.status(StatusCodes.CREATED).json({ user });
 });
 
 module.exports = {
