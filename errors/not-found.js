@@ -1,5 +1,5 @@
-import { StatusCodes } from "http-status-codes";
-import { CustomError } from "./";
+const { StatusCodes } = require("http-status-codes");
+const CustomError = require("./custom-error");
 
 class NotFound extends CustomError {
   constructor(message) {
@@ -7,4 +7,4 @@ class NotFound extends CustomError {
   }
 }
 
-export default NotFound;
+module.exports = NotFound;

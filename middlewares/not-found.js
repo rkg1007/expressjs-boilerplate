@@ -1,7 +1,7 @@
-import { NotFound } from "../errors";
+const { NotFound } = require("../errors");
 
 const notFound = (req, res) => {
   throw new NotFound("Page not Found");
 };
 
-export default notFound;
+module.exports = notFound;
