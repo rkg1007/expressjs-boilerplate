@@ -1,6 +1,7 @@
 require("dotenv").config();
 require("express-async-errors");
 const express = require("express");
+const cookieParser = require("cookie-parser")
 
 const notFound = require("./middlewares/not-found");
 const errorHandler = require("./middlewares/error-handler");
@@ -13,6 +14,7 @@ const MONGO_URI = process.env.MONGO_URI;
 
 // middlewares
 app.use(express.json());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // routes
 app.use("/auth", authRoute);
