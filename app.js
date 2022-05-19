@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import "express-async-error";
+import { connectDb } from "./configs";
 import notFound from "./middlewares/not-found.js";
 import errorHandler from "./middlewares/error-handler.js";
 
@@ -18,7 +19,12 @@ app.use(notFound);
 app.use(errorHandler);
 
 const start = (port, url) => {
-  app.listen(port, console.log(`server is up and running at port ${port}...`));
+  try {
+    await connectDb(url);
+    app.listen(port, console.log(`server is up and running at port ${port}...`));
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 start(PORT, MONGO_URI);
