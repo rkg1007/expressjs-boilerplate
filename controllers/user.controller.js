@@ -37,7 +37,15 @@ const showMe = asyncWrapper(async (req, res) => {
 });
 
 const updateMe = (req, res) => {
-  res.send("update user");
+  const userId = req.user.id;
+  const { name, email } = req.body;
+
+  if (!name || !email) {
+    throw new CustomError.BadRequest("please provide all details i.e name and email");
+  }
+
+  const user = await userService.updateMe({ userId, name, email });
+  res.status(StatusCodes.OK).json({ user });
 };
 
 const deleteMe = asyncWrapper(async (req, res) => {
@@ -50,6 +58,7 @@ module.exports = {
   getUsers,
   getUser,
   showMe,
+  updateMe,
   updateMyPassword,
   deleteMe,
 };

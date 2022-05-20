@@ -19,7 +19,7 @@ const getUser = async (userId) => {
   return user;
 };
 
-const updatePassword = async ({userId, oldPassword, newPassword}) => {
+const updatePassword = async ({ userId, oldPassword, newPassword }) => {
   const user = await User.findById(userId);
 
   if (!user.comparePassword(oldPassword)) {
@@ -30,6 +30,15 @@ const updatePassword = async ({userId, oldPassword, newPassword}) => {
   await user.save();
 
   return { id: user._id, name: user.name, email: user.email };
+};
+
+const updateUser = async ({ userId, name, email }) => {
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { name, email },
+    { new: true, runValidators: true }
+  );
+  return { id: user._id, name: user.name, email: user.email, role: user.role };
 };
 
 const deleteUser = async (userId) => {
