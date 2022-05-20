@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser")
 const notFound = require("./middlewares/not-found");
 const errorHandler = require("./middlewares/error-handler");
 const { connectDb } = require("./configs");
-const { authRoute } = require("./routes");
+const { authRoute, userRoute } = require("./routes");
 const { authenticate } = require("./middlewares/authentication");
 
 const app = express();
@@ -19,6 +19,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // routes
 app.use("/auth", authRoute);
+app.use("/user", userRoute);
 app.use(notFound);
 app.use(errorHandler);
 
