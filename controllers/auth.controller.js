@@ -12,9 +12,28 @@ const register = asyncWrapper(async (req, res) => {
     );
   }
 
-  const { user, token } = await authService.register({ name, email, password });
-  attachCookie.jwtTokenCookie(res, token);
-  res.status(StatusCodes.CREATED).json({ user });
+  const { verificationToken } = await authService.register({
+    name,
+    email,
+    password,
+  });
+
+  res
+    .status(StatusCodes.CREATED)
+    .json({ msg: "please verify your email", verificationToken });
+});
+
+const verifyEmail = asyncWrapper(async (req, res) => {
+  const { email, verificationToken } = req.body;
+
+  if (!email || !verificationToken) {
+    throw new CustomError.BadRequest(
+      "please provide all details i.e email and verification token"
+    );
+  }
+
+  const msg = await authService.verifyEmail({ email, verificationToken });
+  res.status(StatusCodes.OK).json({ msg });
 });
 
 const login = asyncWrapper(async (req, res) => {
@@ -33,11 +52,12 @@ const login = asyncWrapper(async (req, res) => {
 
 const logout = asyncWrapper(async (req, res) => {
   attachCookie.logoutCookie(res);
-  res.status(StatusCodes.OK).json({msg: "success"});
-})
+  res.status(StatusCodes.OK).json({ msg: "success" });
+});
 
 module.exports = {
   register,
+  verifyEmail,
   login,
   logout,
 };
