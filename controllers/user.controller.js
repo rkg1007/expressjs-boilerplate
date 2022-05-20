@@ -36,7 +36,7 @@ const showMe = asyncWrapper(async (req, res) => {
   res.status(StatusCodes.OK).json({ user });
 });
 
-const updateMe = (req, res) => {
+const updateMe = asyncWrapper(async (req, res) => {
   const userId = req.user.id;
   const { name, email } = req.body;
 
@@ -46,7 +46,7 @@ const updateMe = (req, res) => {
 
   const user = await userService.updateMe({ userId, name, email });
   res.status(StatusCodes.OK).json({ user });
-};
+});
 
 const deleteMe = asyncWrapper(async (req, res) => {
   const userId = req.user.id;
