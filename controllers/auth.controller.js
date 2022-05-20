@@ -1,6 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
-const { authService } = require("../services");
+const authService = require("../services/auth.service");
 const { asyncWrapper, attachCookie } = require("../utils");
 
 const register = asyncWrapper(async (req, res) => {
