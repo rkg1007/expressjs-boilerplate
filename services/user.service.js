@@ -12,7 +12,13 @@ const getUsers = async () => {
 };
 
 const getUser = async (userId) => {
-  const user = await User.findById(userId).select({ password: 0 });
+  const user = await User.findById(userId).select({
+    name: 1,
+    email: 1,
+    role: 1,
+    createdAt: 1,
+    updatedAt: 1,
+  });
   if (!user) {
     throw new CustomError.NotFound("user is not found");
   }
