@@ -1,10 +1,21 @@
 const jwt = require("jsonwebtoken");
 const CustomError = require("../errors");
 
-const createToken = (payload) => {
+const createAccessToken = (payload) => {
   const jwtSecret = process.env.JWT_SECRET;
-  const jwtLifetime = process.env.JWT_LIFETIME;
-  const token = jwt.sign(payload, jwtSecret, { expiresIn: jwtLifetime });
+  const jwtAccessTokenLifetime = process.env.JWT_ACCESS_TOKEN_LIFETIME;
+  const token = jwt.sign(payload, jwtSecret, {
+    expiresIn: jwtAccessTokenLifetime,
+  });
+  return token;
+};
+
+const createRefreshToken = (payload) => {
+  const jwtSecret = process.env.JWT_SECRET;
+  const jwtRefreshTokenLifetime = process.env.JWT_REFRESH_TOKEN_LIFETIME;
+  const token = jwt.sign(payload, jwtSecret, {
+    expiresIn: jwtRefreshTokenLifetime,
+  });
   return token;
 };
 
@@ -19,6 +30,7 @@ const verifyToken = (token) => {
 };
 
 module.exports = {
-  createToken,
+  createAccessToken,
+  createRefreshToken,
   verifyToken,
 };
