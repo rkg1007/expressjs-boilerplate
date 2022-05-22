@@ -1,14 +1,29 @@
-const jwtTokenCookie = (res, token) => {
-  res.cookie("token", token, {
+const accessTokenCookie = (res, accessToken) => {
+  res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    maxAge: process.env.COOKIE_LIFETIME,
+    maxAge: process.env.ACCESS_TOKEN_COOKIE_LIFETIME,
+    secure: process.env.ENV === "prod",
+    signed: true,
+  });
+};
+
+const refreshTokenCookie = (res, refreshToken) => {
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    maxAge: process.env.REFRESH_TOKEN_COOKIE_LIFETIME,
     secure: process.env.ENV === "prod",
     signed: true,
   });
 };
 
 const logoutCookie = (res) => {
-  res.cookie("token", "logging out", {
+  res.cookie("accessToken", "logging out", {
+    httpOnly: true,
+    maxAge: 0,
+    secure: process.env.ENV === "prod",
+    signed: true,
+  });
+  res.cookie("refreshToken", "logging out", {
     httpOnly: true,
     maxAge: 0,
     secure: process.env.ENV === "prod",
@@ -17,6 +32,7 @@ const logoutCookie = (res) => {
 };
 
 module.exports = {
-  jwtTokenCookie,
+  accessTokenCookie,
+  refreshTokenCookie,
   logoutCookie,
 };
