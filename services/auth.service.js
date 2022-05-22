@@ -1,9 +1,9 @@
 const crypto = require("crypto");
 const User = require("../models/user.model");
+const Token = require("../models/token.model");
 const CustomError = require("../errors");
 const { StatusCodes } = require("http-status-codes");
 const { jwt } = require("../utils");
-const { use } = require("express/lib/application");
 
 const register = async ({ name, email, password }) => {
   const isEmailAlreadyRegistered = await User.findOne({ email });
@@ -36,7 +36,7 @@ const verifyEmail = async ({ email, verificationToken }) => {
 
   await user.save();
   return "email verified";
-}
+};
 
 const login = async ({ email, password }) => {
   const user = await User.findOne({ email });
@@ -53,7 +53,19 @@ const login = async ({ email, password }) => {
     throw new CustomError.Unauthenticated("you are not verified");
   }
 
-  const token = jwt.createToken({ id: user._id, role: user.role });
+  const refreshTokenString = crypto.randomBytes(40).toString("hex");
+  const token = await Token.create({
+    token: refreshTokenString,
+    user: user._id,
+  });
+
+  const accessToken = jwt.createAccessToken({ id: user._id, role: user.role });
+  const refreshToken = jwt.createRefreshToken({
+    id: user._id,
+    role: user.role,
+    token: refreshTokenString,
+  });
+
   return {
     user: {
       id: user._id,
@@ -61,12 +73,19 @@ const login = async ({ email, password }) => {
       email: user.email,
       role: user.role,
     },
-    token,
+    accessToken,
+    refreshToken
   };
+};
+
+const logout = async (userId) => {
+  await Token.findOneAndDelete({ user: userId });
+  return "token deleted";
 };
 
 module.exports = {
   register,
   login,
-  verifyEmail
+  verifyEmail,
+  logout,
 };

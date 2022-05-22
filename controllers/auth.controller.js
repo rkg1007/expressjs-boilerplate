@@ -45,12 +45,15 @@ const login = asyncWrapper(async (req, res) => {
     );
   }
 
-  const { user, token } = await authService.login({ email, password });
-  attachCookie.jwtTokenCookie(res, token);
+  const { user, accessToken, refreshToken } = await authService.login({ email, password });
+  attachCookie.accessTokenCookie(res, accessToken);
+  attachCookie.refreshTokenCookie(res, refreshToken);
   res.status(StatusCodes.CREATED).json({ user });
 });
 
 const logout = asyncWrapper(async (req, res) => {
+  const userId = req.user.id;
+  await authService.logout(userId);
   attachCookie.logoutCookie(res);
   res.status(StatusCodes.OK).json({ msg: "success" });
 });
