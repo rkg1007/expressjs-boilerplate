@@ -1,6 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
-const { jwt } = require("../utils");
+const { jwt, attachCookie } = require("../utils");
 
 const authenticate = (role) => {
   return function (req, res, next) {
@@ -8,9 +8,18 @@ const authenticate = (role) => {
       role = "user";
     }
 
-    const { token } = req.signedCookies;
-    const payload = jwt.verifyToken(token);
+    const { accessToken, refreshToken } = req.signedCookies;
 
+    if (accessToken) {
+      const payload = jwt.verifyToken(accessToken);
+      if (payload.role == role) {
+        req.user = { ...payload };
+        next();
+        return;
+      }
+    }
+
+    const payload = jwt.verifyToken(refreshToken);
     if (payload.role !== role) {
       throw new CustomError.CustomError(
         "you are not authorized to access this route",
@@ -18,7 +27,9 @@ const authenticate = (role) => {
       );
     }
 
-    req.user = { ...payload };
+    req.user = { id: payload.id, role: payload.role };
+    const newAccessToken = jwt.createAccessToken(req.user);
+    attachCookie.accessTokenCookie(res, newAccessToken);
     next();
   };
 };
